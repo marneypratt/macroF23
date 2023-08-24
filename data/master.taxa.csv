@@ -211,7 +211,7 @@ GYRSP3,genus,Gyretes sp.,Gyretes,Arthropoda,Hexapoda,Insecta,Coleoptera,Gyrinida
 GYRSP,family,Gyrinidae sp.,Gyrinidae,Arthropoda,Hexapoda,Insecta,Coleoptera,Gyrinidae,NA,NA,NA,NA,NA,4,prd,NA
 PELSP3,genus,Peltodytes sp.,Peltodytes,Arthropoda,Hexapoda,Insecta,Coleoptera,Haliplidae,NA,NA,Peltodytes,NA,NA,5,sh,prc
 HYDSP31,genus,Hydraena sp.,Hydraena,Arthropoda,Hexapoda,Insecta,Coleoptera,Hydraenidae,Hydraeninae,Hydraenini,Hydraena,NA,NA,5,prd,NA
-HYDSP30,genus,Hydrochus sp.,Hydrochus,Arthropoda,Hexapoda,Insecta,Coleoptera,Hydrochidae ,NA,NA,Hydrochus,NA,NA,5,sh,NA
+HYDSP30,genus,Hydrochus sp.,Hydrochus,Arthropoda,Hexapoda,Insecta,Coleoptera,Hydrochidae,NA,NA,Hydrochus,NA,NA,5,sh,NA
 BERSP4,genus,Berosus sp.,Berosus,Arthropoda,Hexapoda,Insecta,Coleoptera,Hydrophilidae,Hydrophilinae,Berosini,Berosus,NA,NA,5,cg,NA
 CHASP14,genus,Chaetarthria sp.,Chaetarthria,Arthropoda,Hexapoda,Insecta,Coleoptera,Hydrophilidae,Hydrophilinae,Chaetarthriini,Chaetarthria,NA,NA,5,cg,prd
 CYMSP2,genus,Cymbiodyta sp.,Cymbiodyta,Arthropoda,Hexapoda,Insecta,Coleoptera,Hydrophilidae,Hydrophilinae,Hydrophilini,Cymbiodyta,NA,NA,5,cg,prd
