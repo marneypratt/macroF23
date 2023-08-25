@@ -1,4 +1,4 @@
-This “master.taxa_metadata” file was most recently updated on 2023-04-25 by Marney Pratt
+This “master.taxa_metadata” file was most recently updated on 2023-08-25 by Marney Pratt
 
 
 -------------------
@@ -75,8 +75,7 @@ taxa.notes: notes about the taxonomy
 
 
 tolerance: tolerance for the organism of that type
-	The tolerance is the tolerance to organic pollution used to calculate the Hilsenhof Biotic Index.  Most tolerance values used were
-	taken from the following resources
+	The tolerance is the tolerance to organic pollution used to calculate the Hilsenhof Biotic Index.  Most tolerance values used were taken from the following resources
 	
 	Stream Biomonitoring Unit Staff.  2012. Standard operating Procedure: Biological monitoring of surface waters in New York State.  
 	New York State Department of Environmental Conservation Division of Water.  Albany, NY.
