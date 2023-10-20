@@ -1,7 +1,7 @@
 ---
 title: "Macroinvertebrate Data Analysis"
 author: "Marney Pratt"
-date: "August 23, 2023"
+date: "October 20, 2023"
 format: 
   html:
     code-overflow: wrap
@@ -33,30 +33,30 @@ Figure out which data file(s) you need to import (see the metadata files for mor
 #| label: import data
 
 env <- read_csv("data/env.csv",
-                 col_types = cols(date = col_date(format = "%Y-%m-%d"),
-                  
-                  location = col_factor(levels = c(
-                    "Downstream","Upstream")), 
-                  
-                  season = col_factor(levels = c("Summer","Fall")), 
-                  
-                  year = col_factor()
-                 )) 
+         col_types = cols(date = col_date(format = "%Y-%m-%d"),
+          
+          location = col_factor(levels = c(
+            "Downstream","Upstream")), 
+          
+          season = col_factor(levels = c("Summer","Fall")), 
+          
+          year = col_factor()
+         )) 
 
 macros <- read_csv("data/macros.csv",
-                 col_types = cols(date = col_date(format = "%Y-%m-%d"),
-                  
-                  location = col_factor(levels = c(
-                    "Downstream","Upstream")), 
-                  
-                  season = col_factor(levels = c("Summer","Fall")), 
-                  
-                  year = col_factor()
-                 )) 
+           col_types = cols(date = col_date(format = "%Y-%m-%d"),
+            
+            location = col_factor(levels = c(
+              "Downstream","Upstream")), 
+            
+            season = col_factor(levels = c("Summer","Fall")), 
+            
+            year = col_factor()
+           )) 
 
 
 master.taxa <- read_csv("data/master.taxa.csv",
-                        show_col_types = FALSE) %>% 
+                show_col_types = FALSE)  |>  
   distinct()
 
 
@@ -74,30 +74,30 @@ Note, once you have completed this code chunk, you should have a new data frame 
 #| warning: false
 
 #calculate limpet density for each sampleID
-density.df <- macros %>% 
+density.df <- macros |> 
   
   #join taxa info
-  left_join(., master.taxa) %>%
+  left_join(., master.taxa) |>
   
   # Summarize for each sampleID and each family 
   # change group_by function to remove or add grouping variables as needed 
   # if you want a specific group of organisms, add that column name into 
   # the list of grouping variables (family, organism_aggr, FFG, etc)
   # then filter for the organism or group you want
-  group_by(sampleID, family) %>% 
-  dplyr::summarise (density = sum(invDens, na.rm = TRUE)) %>% 
+  group_by(sampleID, family) |> 
+  dplyr::summarise (density = sum(invDens, na.rm = TRUE)) |> 
 
   #fill in group combos where there were none present with zeros
-  ungroup() %>% 
+  ungroup() |> 
   complete(sampleID, family,
-           fill = list(density = 0)) %>% 
+           fill = list(density = 0)) |> 
   
   #filter for limpets
   filter(family == "Ancylidae")
 
 #get sample info
-sample.info <- macros %>%
-  select(date, sampleID, season, year, location, benthicArea) %>% 
+sample.info <- macros |>
+  select(date, sampleID, season, year, location, benthicArea) |> 
   distinct()
 
 #add sample info back to density data
@@ -105,13 +105,13 @@ density.df <- left_join(density.df, sample.info)
 
 
 #select desired variables from env
-env2 <- env %>% 
+env2 <- env |> 
   select(sampleID, 
          DO, wTemp,  
          mon.precip, mon.ADD) 
 
 #add env variables to density data
-density.df <- left_join(density.df, env2) %>% 
+density.df <- left_join(density.df, env2) |> 
   filter(year != "2018")
 
 
@@ -130,17 +130,17 @@ Make a table of the data that you used in your analysis (how many samples and ho
 #| message: false
 #| warning: false
 
-table.sum <- density.df %>%  #put the name of your wrangled data here
+table.sum <- density.df |>  #put the name of your wrangled data here
   
   #summarize by date, season, & location (to get number of microhabs and area sampled per date)
-  group_by(date, season, location) %>% 
+  group_by(date, season, location) |> 
   summarize(
     area = sum(benthicArea),
     samples = n()
-  ) %>% 
+  ) |> 
   
   #summarize by season & location 
-  group_by(season, location) %>% 
+  group_by(season, location) |> 
   summarize(
     dates = str_c(date, collapse = ", "),
     samples = sum(samples),
@@ -200,7 +200,7 @@ ft <- set_table_properties(ft, layout = "autofit", width = 1)
 
 
 #add lines between year x season
-ft <- theme_vanilla(ft) %>% 
+ft <- theme_vanilla(ft) |> 
   fontsize(size = 10)
 
 #center columns
@@ -229,8 +229,8 @@ This is optional, but if you want to have a summary of what the weather was like
 #before you run this code, make sure your dataframe has all the necessary columns
 #you need season, year, location, mon.ADD, mon.precip
 
-weather.sum <- density.df %>%  #put the name of your wrangled data here
-    group_by(season, year) %>% 
+weather.sum <- density.df |>  #put the name of your wrangled data here
+    group_by(season, year) |> 
   summarize(
     mon.ADD = round(mean(mon.ADD, na.rm=TRUE), digits=0),
     mon.precip = round(mean(mon.precip, na.rm=TRUE), digits=0)
@@ -272,7 +272,7 @@ ft <- merge_v(ft, j = ~ season + year)
 ft <- set_table_properties(ft, layout = "autofit", width = 1)
 
 #add lines between year x season
-ft <- theme_vanilla(ft) %>% 
+ft <- theme_vanilla(ft) |> 
   fontsize(size = 10)
 
 #center columns
@@ -310,8 +310,8 @@ x.var <- "density" #put the name of the column you want to summarize in the blan
 
 #calculate descriptive stats
 #remove the lines below that you don't need (you won't usually need ALL these values)
-df.sum <- density.df %>% #put the name of the data frame here
-  group_by(season, location) %>% #put the grouping variable(s) here
+df.sum <- density.df |> #put the name of the data frame here
+  group_by(season, location) |> #put the grouping variable(s) here
   summarise(mean = round(mean(.data[[x.var]]), digits=0), #change the digits as needed
             SD = signif(sd(.data[[x.var]]), digits=2),
             median = round(median(.data[[x.var]]), digits=2),
@@ -358,9 +358,9 @@ x.var <- "DO" #put the name of the column you want to summarize in the blank her
 
 #calculate descriptive stats
 #remove the lines below that you don't need (you won't usually need ALL these values)
-df.sum <- density.df %>% #put the name of the data frame here
-  group_by(season, location) %>% #put the grouping variable(s) here
-  filter(!is.na(.data[[x.var]])) %>% # remove missing values from the variable of interest
+df.sum <- density.df |> #put the name of the data frame here
+  group_by(season, location) |> #put the grouping variable(s) here
+  filter(!is.na(.data[[x.var]])) |> # remove missing values from the variable of interest
   summarise(mean = round(mean(.data[[x.var]]), digits=2), #change the digits as needed
             SD = signif(sd(.data[[x.var]]), digits=2),
             median = round(median(.data[[x.var]]), digits=2),
@@ -407,9 +407,9 @@ x.var <- "wTemp" #put the name of the column you want to summarize in the blank 
 
 #calculate descriptive stats
 #remove the lines below that you don't need (you won't usually need ALL these values)
-df.sum <- density.df %>% #put the name of the data frame here
-  group_by(season, location) %>% #put the grouping variable(s) here
-  filter(!is.na(.data[[x.var]])) %>% # remove missing values from the variable of interest
+df.sum <- density.df |> #put the name of the data frame here
+  group_by(season, location) |> #put the grouping variable(s) here
+  filter(!is.na(.data[[x.var]])) |> # remove missing values from the variable of interest
   summarise(mean = round(mean(.data[[x.var]]), digits=1), #change the digits as needed
             SD = signif(sd(.data[[x.var]]), digits=2),
             median = round(median(.data[[x.var]]), digits=1),
@@ -450,8 +450,8 @@ Find the code you need to visualize (=graph) your data by looking in the "graphi
 
 # this code will make a scatter plot with each graphed on a log-scale axis
 
-density.df %>% 
-  filter(!is.na(DO)) %>% 
+density.df |> 
+  filter(!is.na(DO)) |> 
 
 ggplot(
   data = ., 
@@ -493,8 +493,8 @@ ggsave(filename="images/limpet.DO.png",  #recommended to use.png or .jpg file ty
 
 # this code will make a scatter plot with each graphed on a log-scale axis
 
-density.df %>% 
-  filter(!is.na(wTemp)) %>% 
+density.df |> 
+  filter(!is.na(wTemp)) |> 
 
 ggplot(
   data = ., 
@@ -530,8 +530,8 @@ ggsave(filename="images/limpet.wTemp.png",  #recommended to use.png or .jpg file
 
 #| label: wTemp vs season and location
 
-density.df %>% 
-  filter(!is.na(wTemp)) %>% 
+density.df |> 
+  filter(!is.na(wTemp)) |> 
 
 ggplot(
   data = .,   
@@ -570,8 +570,8 @@ ggsave(filename="images/wTemp.season.png",  #recommended to use.png or .jpg file
 #| label: DO vs wTemp graph
 #| message: false
 
-density.df %>% 
-  filter(!is.na(DO), !is.na(wTemp)) %>% 
+density.df |> 
+  filter(!is.na(DO), !is.na(wTemp)) |> 
 
 ggplot(
   data = ., 

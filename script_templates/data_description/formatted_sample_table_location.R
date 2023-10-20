@@ -33,7 +33,7 @@ ft <- bold(ft, part="header")
 ft <- set_table_properties(ft, layout = "autofit", width = 1)
 
 #add lines between year x season
-ft <- theme_vanilla(ft) %>% 
+ft <- theme_vanilla(ft)  |>  
   fontsize(size = 10)
 
 #center columns
