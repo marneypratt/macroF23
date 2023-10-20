@@ -11,9 +11,9 @@ x.var <- "___" #put the name of the column you want to summarize in the blank he
 
 #calculate descriptive stats
 #remove the lines below that you don't need (you won't usually need ALL these values)
-df.sum <- ___ %>% #put the name of the data frame here
-  group_by(___) %>% #put the grouping variable(s) here
-  filter(!is.na(.data[[x.var]])) %>% # remove missing values from the variable of interest
+df.sum <- ___ |> #put the name of the data frame here
+  group_by(___) |> #put the grouping variable(s) here
+  filter(!is.na(.data[[x.var]])) |> # remove missing values from the variable of interest
   summarise(mean = round(mean(.data[[x.var]]), digits=2), #change the digits as needed
             SD = signif(sd(.data[[x.var]]), digits=2),
             median = round(median(.data[[x.var]]), digits=2),
@@ -37,5 +37,4 @@ ft <- align(ft, align = "center", part = "all" )
 #choose copy, then paste in your document
 #finish formatting as needed in your document
 ft
-
 

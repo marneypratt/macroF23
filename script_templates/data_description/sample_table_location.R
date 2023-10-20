@@ -1,14 +1,14 @@
 
-table.sum <- ___ %>%  #put the name of your wrangled data here
+table.sum <- ___  |>   #put the name of your wrangled data here
   
   #summarize by date & location (to get number of microhabs and area sampled per date)
-  group_by(date, location) %>% 
+  group_by(date, location)  |>  
   summarize(
     area = sum(benthicArea),
     samples = n()
-  ) %>% 
+  )  |>  
 
-group_by(location) %>% 
+group_by(location)  |>  
 
   #summarize by location
   summarize(
