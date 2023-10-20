@@ -56,7 +56,7 @@ Note, once you have completed this code chunk, you should have a new data frame 
 Make a table of the data that you used in your analysis (how many samples and how much area was sampled in each of the groups) to include in the Data Analysis Methods section of your paper. Go to the "data_description" script templates and select the correct version of the 'sample_table' script based on which factors you are using and paste that code below.
 
 ```{r}
-#| label: sample table
+#| label: tbl-sample-table
 #| tbl-cap: Unformatted Summary Table
 
 
@@ -66,7 +66,7 @@ Make a table of the data that you used in your analysis (how many samples and ho
 If you want code to make a formatted table for you, go to the "data_description" script templates and select the correct version of the 'formatted_sample_table' script based on which factors you are using and paste that code below. 
 
 ```{r}
-#| label: formatted sample table
+#| label: tbl-formatted-sample-table
 #| tbl-cap: Summary Table
 #| include: true
 
@@ -81,7 +81,7 @@ If you want code to make a formatted table for you, go to the "data_description"
 Use the template code below to calculate the descriptive statistics for your variable of interest. The output of this code should NOT all be reported in your paper. Decide which (if any) of the descriptive statistics you should report and make sure to round the values. Descriptive statistics can be reported in the text of the results (see this [example results section](https://docs.google.com/document/d/1vwyOSmhZzTuIfAEbpeiv3yCsU1UMZDsTXgnbE80nPTU/edit?usp=sharing)) if relatively simple, or you can make a formatted table of just the necessary, rounded values to include in your paper (in which case you might want to use "formatted_descriptiveStats_table.R" in the "data_description" script templates to help you make a formatted table).
 
 ```{r}
-#| label: descriptive stats
+#| label: tbl-descriptive-stats
 #| tbl-cap: Descriptive Statistics
 #| include: true
 
@@ -100,7 +100,7 @@ Find the code you need to visualize (=graph) your data by looking in the "graphi
 
 To save your graph with the `ggsave()` function, you need to name the resulting file with surrounding " ", and indicate the size via height, width, and units. Don't forget to save the graph with a dpi call at 300-500 to make it nice and crisp! Look at the `ggsave()` help file for more information and options.
 
-Note that the code below will save the most recent graph made in the "images" folder (make sure to replace the underlined part with a name for your graph file that will help you find the file again later)
+Note that the code below will save the most recent graph you made and put it into the "images" folder (make sure to replace the underlined part with a name for your graph file that will help you find the file again later)
 
 ```{r}
 #| label: Save your graph
