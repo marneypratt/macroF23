@@ -7,14 +7,14 @@
 # make sure the readr` package is loaded before importing these files
 
 waterQ <- read_csv("data/waterQ.csv",
-                 col_types = cols(date = col_date(format = "%Y-%m-%d"),
-                  
-                  location = col_factor(levels = c(
-                    "Downstream","Upstream")), 
-                  
-                  season = col_factor(levels = c("Summer","Fall")), 
-                  
-                  year = col_factor()
-                 )) 
+         col_types = cols(date = col_date(format = "%Y-%m-%d"),
+          
+          location = col_factor(levels = c(
+            "Downstream","Upstream")), 
+          
+          season = col_factor(levels = c("Summer","Fall")), 
+          
+          year = col_factor()
+         )) 
 
 
