@@ -90,7 +90,7 @@ Descriptive statistics can be reported in the text of the results (see this [exa
 x.var <- "___" #put the name of the column you want to summarize in the blank here
 
 #calculate descriptive stats
-df.sum <- ___ |> #put the name of the data frame here
+df.sum <- my.df |> 
   group_by(___) |> #put the grouping variable(s) here
   filter(!is.na(.data[[x.var]])) |> # remove missing values 
   
