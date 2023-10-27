@@ -18,26 +18,27 @@ density.df <- macros |>
   complete(sampleID, genus,
            fill = list(density = 0)) |> 
   
-  #filter for genus of interest (this needs to match what is in the macros file)
-  filter(genus == "___") #replace this blank with the genus you want to keep
+  #filter for genus of interest 
+  #this needs to match what is in the macros file
+  #replace this blank with the genus you want to keep
+  filter(genus == "___")
 
-#get sample info
+#get sample info and env variables of interest
 sample.info <- macros |>
-  select(date, sampleID, season, year, location, benthicArea) |> 
+  
+  #join environmental variables
+  left_join(env) |> 
+  
+  #select variables of interest
+  #delete anything you don't need
+  #add anything you do need in the blank with commas in between
+  dplyr::select(date, sampleID, season, year, location, benthicArea,
+                ___) |> 
   distinct()
 
 #add sample info back to density data
-density.df <- left_join(density.df, sample.info)
-
-
-#select desired variables from env then join to density data
-#remove the 3 lines of code below if you do not need any environmental variables
-env2 <- env |> 
-  select(sampleID, ___) #add columns from env file that you want to keep
-
-density.df <- left_join(density.df, env2) |> 
+density.df <- left_join(density.df, sample.info) |> 
   
-  #filter as needed (below is an example that removes data from 2018)
-  filter(year != "2018")
-
-
+  #filter out anything you don't want
+  #the example below would filter out just the year 2018
+  dplyr::filter(year != "2018")
