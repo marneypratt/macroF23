@@ -40,4 +40,4 @@ variables <- macros |>
 
 #add in the variables just selected
 #sampleID is the "key" used to match up the two data frames
-macro.HBI <- left_join(macro.HBI, variables)
+my.df <- left_join(macro.HBI, variables)

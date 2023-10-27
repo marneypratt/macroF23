@@ -42,4 +42,4 @@ variables <- macros |>
 
 #add in the variables just selected
 #sampleID is the "key" used to match up the two data frames
-macro.ffg <- left_join(macro.ffg, variables)
+my.df <- left_join(macro.ffg, variables)

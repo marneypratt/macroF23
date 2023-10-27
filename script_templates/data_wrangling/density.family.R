@@ -24,7 +24,7 @@ density.df <- macros |>
   dplyr::filter(family == "___") 
 
 #get sample info and env variables of interest
-sample.info <- macros |>
+variables <- macros |>
   
   #join environmental variables
   left_join(env) |> 
@@ -37,7 +37,7 @@ sample.info <- macros |>
   distinct()
 
 #add sample info back to density data
-density.df <- left_join(density.df, sample.info) |> 
+my.df <- left_join(density.df, variables) |> 
   
   #filter out anything you don't want
   #the example below would filter out just the year 2018

@@ -5,6 +5,16 @@
 #this code will calculate the predator ratio 
 # predator ratio = #predators /(#scrapers + #collector filterers + #collector gatherers + shredders)
 
+macro.total <- macros |> 
+  
+  #join taxonomic information 
+  left_join(master.taxa) |> 
+  
+  #calculate the number of each FFG in each sampleID
+  group_by(sampleID) |> 
+  summarize(total.macros = sum(number, na.rm = TRUE))
+
+
 macro.prd <- macros |> 
   
   #join taxonomic information 
@@ -17,11 +27,11 @@ macro.prd <- macros |>
   #pivot wider to make column for each FFG
   pivot_wider(names_from = FFG, values_from = number, values_fill = 0) |> 
   
-  #add non-predators together
-  mutate(not.prd = sum(scr,cf, cg, sh, na.rm = TRUE)) |> 
+  #add in total of all macros
+  left_join(macro.total, by = "sampleID") |> 
   
   #calculate the predator ratio
-  mutate(prd.ratio = (prd/not.prd)) 
+  mutate(prd.ratio = (prd/(total.macros-prd))) 
 
 
 # select other variables you want present in your final dataset
@@ -39,4 +49,4 @@ variables <- macros |>
 
 #add in the variables just selected
 #sampleID is the "key" used to match up the two data frames
-macro.ffg <- left_join(macro.ffg, variables)
+my.df <- left_join(macro.prd, variables)

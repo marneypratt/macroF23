@@ -3,19 +3,6 @@
 # macros, master.taxa, and env data files must be imported before you 
 # can run the code below
 
-#get sample info and env variables of interest
-sample.info <- macros |>
-  
-  #join environmental variables
-  left_join(env) |> 
-  
-  #select variables of interest
-  #delete anything you don't need
-  #add anything you do need in the blank with commas in between
-  dplyr::select(date, sampleID, season, year, location, benthicArea,
-                ___) |> 
-  distinct()
-
 #get total samples
 samples <- macros |>
   select(sampleID) |> 
@@ -46,9 +33,24 @@ moderate.density <- macros |>
   complete(sampleID,  
            fill = list(density = 0)) |> 
   
-  #add back the sampling info
-  left_join(sample.info) |> 
+  mutate(tolerance = "moderate")
+  
+#get sample info and env variables of interest
+variables <- macros |>
+  
+  #join environmental variables
+  left_join(env) |> 
+  
+  #select variables of interest
+  #delete anything you don't need
+  #add anything you do need in the blank with commas in between
+  dplyr::select(date, sampleID, season, year, location, benthicArea,
+                ___) |> 
+  distinct()
+
+#add sample info back to density data
+my.df <- left_join(moderate.density, variables) |> 
   
   #filter out anything you don't want
   #the example below would filter out just the year 2018
-  dplyr::filter(year != "2018") 
+  dplyr::filter(year != "2018")

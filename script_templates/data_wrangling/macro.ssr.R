@@ -2,32 +2,17 @@
 
 # macros and master.taxa data must both be imported before you can run the code below
 
-# select other variables you want present in your final dataset
-variables <- macros |> 
-  
-  #join environmental variables
-  left_join(env) |> 
-  
-  #add or remove any variables from the original dataset that you want present
-  #make sure you keep sampleID because this is what is used to match the data
-  #replace the blank with your environmental variables (or remove that part)
-  select(sampleID, date, location, year, season, benthicArea, 
-         ___) |> 
-  distinct()
-
-
-#this code will calculate the substrate stability ratio (SSR)
-# SSR = (#scrapers + #collector filterers)/(#collector gatherers + shredders)
-
-macro.t <- macros |> 
+macro.total <- macros |> 
   
   #join taxonomic information 
   left_join(master.taxa) |> 
   
   #calculate the number of each FFG in each sampleID
-  group_by(sampleID) |> 
-  summarize(total = sum(number, na.rm=TRUE))
+  group_by(sampleID, benthicArea) |> 
+  summarize(total.macros = sum(number, na.rm = TRUE))
 
+#this code will calculate the substrate stability ratio (SSR)
+# SSR = (#scrapers + #collector filterers)/(#collector gatherers + shredders)
 macro.ssr <- macros |> 
   
   #join taxonomic information 
@@ -48,16 +33,29 @@ macro.ssr <- macros |>
     ssr = ((sum(scr,cf, na.rm=TRUE)+1)/(sum(cg,sh, na.rm=TRUE)+1))) |> 
   
   #add total of all macros
-  left_join(macro.t ) |> 
+  left_join(macro.total) |> 
   
   #calc the relative abundance of macros that like rocks and sand
-  mutate(relab.rock = rock/total,
-         relab.sand = sand/total) |> 
-  
-  #add other variables back
-  left_join(variables, by="sampleID") |> 
-  
+  mutate(relab.rock = rock/total.macros,
+         relab.sand = sand/total.macros) |> 
+
   #calc the density of macros that like rocks and sand
   mutate(den.rock = rock/benthicArea,
          den.sand = sand/benthicArea)
   
+# select other variables you want present in your final dataset
+variables <- macros |> 
+  
+  #join environmental variables
+  left_join(env) |> 
+  
+  #select variables of interest
+  #delete anything you don't need
+  #add anything you do need in the blank with commas in between
+  dplyr::select(date, sampleID, season, year, location, benthicArea,
+                ___) |> 
+  distinct()
+
+#add in the variables just selected
+#sampleID is the "key" used to match up the two data frames
+my.df <- left_join(macro.ssr, variables)
