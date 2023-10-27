@@ -10,11 +10,14 @@
 x.var <- "___" #put the name of the column you want to summarize in the blank here
 
 #calculate descriptive stats
-#remove the lines below that you don't need (you won't usually need ALL these values)
 df.sum <- ___ |> #put the name of the data frame here
   group_by(___) |> #put the grouping variable(s) here
-  filter(!is.na(.data[[x.var]])) |> # remove missing values from the variable of interest
-  summarise(mean = round(mean(.data[[x.var]]), digits=2), #change the digits as needed
+  filter(!is.na(.data[[x.var]])) |> # remove missing values 
+  
+  #remove the lines below that you don't need 
+  #(you won't usually need ALL these values)
+  #change the digits as needed
+  summarise(mean = round(mean(.data[[x.var]]), digits=2), 
             SD = signif(sd(.data[[x.var]]), digits=2),
             median = round(median(.data[[x.var]]), digits=2),
             IQR = round(IQR(.data[[x.var]]), digits=2),
@@ -24,17 +27,16 @@ df.sum <- ___ |> #put the name of the data frame here
 
 #create the table
 ft <- flextable(df.sum,
-                cwidth=0.75) #can vary cell width as needed
-
-#bold the headings
-ft <- bold(ft, part="header")
-
-#center columns
-ft <- align(ft, align = "center", part = "all" )
+                cwidth = 0.75) |>  #can vary cell width as needed
+  
+  #bold the headings
+  bold(part = "header") |> 
+  
+  #center columns
+  align(align = "center", part = "all" )
 
 #print the table
 #right click on the table, choose select all, 
 #choose copy, then paste in your document
 #finish formatting as needed in your document
 ft
-
