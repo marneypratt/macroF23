@@ -61,7 +61,7 @@ variables <- macros |>
   #delete anything you don't need
   #add anything you do need in the blank with commas in between
   dplyr::select(date, sampleID, season, year, location, benthicArea,
-                DO) |> 
+                ___) |> 
   distinct()
 
 #add in the variables just selected
