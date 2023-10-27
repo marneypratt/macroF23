@@ -1,5 +1,5 @@
 
-table.sum <- density.df |>  #put the name of your wrangled data here
+table.sum <- ___ |>  #put the name of your wrangled data here
   
   #summarize by date, season, & location (to get number of microhabs and area sampled per date)
   group_by(date, season, location) |> 
