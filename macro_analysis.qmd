@@ -27,7 +27,11 @@ library(flextable) ## for making formatted tables that can be pasted into Word o
 
 ## Import Data
 
-Figure out which data file(s) you need to import (see the metadata files for more information about each data file). Find the code you need in the "importing_data" folder within the "script_templates" folder. Copy and paste the code you need into the chunk below.
+Figure out which data file(s) you need to import (see the metadata files for more information about each data file).
+
+Find the code you need by clicking on the "script_templates" folder then selecting the "importing_data" folder in the "Files" tab in the lower right area of RStudio.
+
+Copy and paste the code you need into the chunk below (Do **NOT** run the code directly from the script template, copy and paste the template code below)
 
 ```{r}
 #| label: import data
@@ -57,18 +61,9 @@ Make a table of the data that you used in your analysis (how many samples and ho
 
 ```{r}
 #| label: tbl-sample-table
-#| tbl-cap: Unformatted Summary Table
-
-
-
-```
-
-If you want code to make a formatted table for you, go to the "data_description" script templates and select the correct version of the 'formatted_sample_table' script based on which factors you are using and paste that code below. 
-
-```{r}
-#| label: tbl-formatted-sample-table
-#| tbl-cap: Summary Table
+#| tbl-cap: Sample Summary Table
 #| include: true
+
 
 
 
@@ -78,13 +73,53 @@ If you want code to make a formatted table for you, go to the "data_description"
 
 ## Descriptive Statistics
 
-Use the template code below to calculate the descriptive statistics for your variable of interest. The output of this code should NOT all be reported in your paper. Decide which (if any) of the descriptive statistics you should report and make sure to round the values. Descriptive statistics can be reported in the text of the results (see this [example results section](https://docs.google.com/document/d/1vwyOSmhZzTuIfAEbpeiv3yCsU1UMZDsTXgnbE80nPTU/edit?usp=sharing)) if relatively simple, or you can make a formatted table of just the necessary, rounded values to include in your paper (in which case you might want to use "formatted_descriptiveStats_table.R" in the "data_description" script templates to help you make a formatted table).
+Use the template code below to calculate the descriptive statistics for your variable of interest. 
+
+The output of this code should NOT all be reported in your paper. Decide which (if any) of the descriptive statistics you should report and make sure to round the values. 
+
+Descriptive statistics can be reported in the text of the results (see this [example results section](https://docs.google.com/document/d/1vwyOSmhZzTuIfAEbpeiv3yCsU1UMZDsTXgnbE80nPTU/edit?usp=sharing)) if relatively simple, or you can make a formatted table of just the necessary, rounded values to include in your paper.
 
 ```{r}
 #| label: tbl-descriptive-stats
 #| tbl-cap: Descriptive Statistics
 #| include: true
 
+#see https://davidgohel.github.io/flextable/ for more information and formatting options
+
+#set the variable you want to summarize
+x.var <- "___" #put the name of the column you want to summarize in the blank here
+
+#calculate descriptive stats
+df.sum <- ___ |> #put the name of the data frame here
+  group_by(___) |> #put the grouping variable(s) here
+  filter(!is.na(.data[[x.var]])) |> # remove missing values 
+  
+  #remove the lines below that you don't need 
+  #you won't usually need ALL these values
+  #change the digits as needed
+  summarise(mean = round(mean(.data[[x.var]]), digits=2), 
+            SD = signif(sd(.data[[x.var]]), digits=2),
+            median = round(median(.data[[x.var]]), digits=2),
+            IQR = round(IQR(.data[[x.var]]), digits=2),
+            min = round(min(.data[[x.var]]), digits=2),
+            max = round(max(.data[[x.var]]), digits=2),
+            N = n())
+
+#create the table
+ft <- flextable(df.sum,
+                cwidth=0.75) |>  #can vary cell width as needed
+  
+  #bold the headings
+  bold(part="header") |> 
+  
+  #center columns
+  align(align = "center", part = "all" )
+
+#print the table
+#right click on the table, choose select all, 
+#choose copy, then paste in your document
+#finish formatting as needed in your document
+ft
 
 ```
 

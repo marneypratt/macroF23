@@ -1,7 +1,7 @@
 ---
 title: "Macroinvertebrate Data Analysis"
 author: "Marney Pratt"
-date: "October 20, 2023"
+date: "October 27, 2023"
 format: 
   html:
     code-overflow: wrap
@@ -27,7 +27,11 @@ library(flextable) ## for making formatted tables that can be pasted into Word o
 
 ## Import Data
 
-Figure out which data file(s) you need to import (see the metadata files for more information about each data file). Find the code you need in the "importing_data" folder within the "script_templates" folder. Copy and paste the code you need into the chunk below.
+Figure out which data file(s) you need to import (see the metadata files for more information about each data file).
+
+Find the code you need by clicking on the "script_templates" folder then selecting the "importing_data" folder in the "Files" tab in the lower right area of RStudio.
+
+Copy and paste the code you need into the chunk below (Do **NOT** run the code directly from the script template, copy and paste the template code below)
 
 ```{r}
 #| label: import data
@@ -77,7 +81,7 @@ Note, once you have completed this code chunk, you should have a new data frame 
 density.df <- macros |> 
   
   #join taxa info
-  left_join(., master.taxa) |>
+  left_join(master.taxa) |>
   
   # Summarize for each sampleID and each family 
   # change group_by function to remove or add grouping variables as needed 
@@ -85,7 +89,7 @@ density.df <- macros |>
   # the list of grouping variables (family, organism_aggr, FFG, etc)
   # then filter for the organism or group you want
   group_by(sampleID, family) |> 
-  dplyr::summarise (density = sum(invDens, na.rm = TRUE)) |> 
+  dplyr::summarise(density = sum(invDens, na.rm = TRUE)) |> 
 
   #fill in group combos where there were none present with zeros
   ungroup() |> 
@@ -95,26 +99,19 @@ density.df <- macros |>
   #filter for limpets
   filter(family == "Ancylidae")
 
-#get sample info
+#get sample info and env variables of interest
 sample.info <- macros |>
-  select(date, sampleID, season, year, location, benthicArea) |> 
+  left_join(env) |> 
+  select(date, sampleID, season, year, location, benthicArea,
+         DO, wTemp,  
+         mon.precip, mon.ADD) |> 
   distinct()
 
 #add sample info back to density data
-density.df <- left_join(density.df, sample.info)
-
-
-#select desired variables from env
-env2 <- env |> 
-  select(sampleID, 
-         DO, wTemp,  
-         mon.precip, mon.ADD) 
-
-#add env variables to density data
-density.df <- left_join(density.df, env2) |> 
+density.df <- left_join(density.df, sample.info) |> 
+  
+  #filter out anything you don't want
   filter(year != "2018")
-
-
 
 ```
 
@@ -125,10 +122,10 @@ density.df <- left_join(density.df, env2) |>
 Make a table of the data that you used in your analysis (how many samples and how much area was sampled in each of the groups) to include in the Data Analysis Methods section of your paper. Go to the "data_description" script templates and select the correct version of the 'sample_table' script based on which factors you are using and paste that code below.
 
 ```{r}
-#| label: sample table
-#| tbl-cap: Unformatted Summary Table
-#| message: false
-#| warning: false
+#| label: tbl-sample-table
+#| tbl-cap: Sample Summary Table
+#| include: true
+
 
 table.sum <- density.df |>  #put the name of your wrangled data here
   
@@ -136,30 +133,14 @@ table.sum <- density.df |>  #put the name of your wrangled data here
   group_by(date, season, location) |> 
   summarize(
     area = sum(benthicArea),
-    samples = n()
-  ) |> 
+    samples = n()) |> 
   
   #summarize by season & location 
   group_by(season, location) |> 
   summarize(
     dates = str_c(date, collapse = ", "),
     samples = sum(samples),
-    area = sum(area),
-  )  
-
-
-table.sum
-
-
-```
-
-If you want code to make a formatted table for you, go to the "data_description" script templates and select the correct version of the 'formatted_sample_table' script based on which factors you are using and paste that code below.
-
-```{r}
-#| label: formatted sample table
-#| tbl-cap: Summary Table
-#| include: true
-
+    area = sum(area))  
 
 #To get a formatted table, make sure that the {flextable} package is loaded
 #Use additional code to create the summary table called "table.sum"
@@ -167,118 +148,32 @@ If you want code to make a formatted table for you, go to the "data_description"
 
 #see https://davidgohel.github.io/flextable/ for more information and formatting options
 
-
 #create the formatted table
-ft <- flextable(table.sum)
+ft <- flextable(table.sum) |> 
 
 #create header labels
-ft <- set_header_labels(ft,
-                        season = "Season",
-                        location = "Location",
-                        dates = "Dates",
-                        samples = "# of Samples",
-                        area = "Total Area Sampled (m^2)"
-                        )
+set_header_labels(season = "Season",
+                  location = "Location",
+                  dates = "Dates",
+                  samples = "# of Samples",
+                  area = "Total Area Sampled (m^2)") |> 
 
-#format superscript
-ft <- compose( 
-  ft, j = "area", part="header",
-  value = as_paragraph(
-    "Total Area Sampled (m", 
-    as_sup("2"),
-    ")"
-  )
-)
-
-#bold the headings
-ft <- bold(ft, part="header")
-
-ft <- merge_v(ft, j = ~ season)
-
-#set table properties
-ft <- set_table_properties(ft, layout = "autofit", width = 1)
-
-
-#add lines between year x season
-ft <- theme_vanilla(ft) |> 
-  fontsize(size = 10)
-
-#center columns
-ft <- align(ft, align = "center", part = "all" )
-
-ft <- fix_border_issues(ft)
-
-#print the table
-#right click on the table, choose select all, 
-#choose copy, then paste in your document
-#finish formatting as needed in your document
-ft
-
-```
-
-## Weather Table
-
-This is optional, but if you want to have a summary of what the weather was like in the month before sampling, then use the two code chunks below along with the template code from "script_templates" then "data_description" and select the correct version of the "weather_table\_.R" script based on which factors you are using and paste that code below. (note that the weather is the same for both locations, so you do not need that factor)
-
-```{r}
-#| label: weather table
-#| tbl-cap: Unformatted Weather Table
-#| message: false
-#| warning: false
-
-#before you run this code, make sure your dataframe has all the necessary columns
-#you need season, year, location, mon.ADD, mon.precip
-
-weather.sum <- density.df |>  #put the name of your wrangled data here
-    group_by(season, year) |> 
-  summarize(
-    mon.ADD = round(mean(mon.ADD, na.rm=TRUE), digits=0),
-    mon.precip = round(mean(mon.precip, na.rm=TRUE), digits=0)
-  )  
-
-weather.sum
-
-```
-
-If you want code to make a formatted table for you, go to the "data_description" script templates and select the 'formatted_weather_table\_.R' script based on which factors you are using and paste that code below. (note that the weather is the same for both locations, so you do not need that factor)
-
-```{r}
-#| label: formatted weather table
-#| tbl-cap: Weather Table
-#| include: true
-
-#To get a formatted table, make sure that the {flextable} package is loaded
-#If you want to format the table yourself, then don't use this code
-
-#see https://davidgohel.github.io/flextable/ for more information and formatting options
-
-#create the formatted table
-ft <- flextable(weather.sum)
-
-#create header labels
-ft <- set_header_labels(ft,
-                        season = "Season",
-                        year = "Year",
-                        mon.ADD = "Monthly Accumulated Degree Days",
-                        mon.precip = "Monthly Total Precipitation (mm)"
-                        )
-
-#bold the headings
-ft <- bold(ft, part="header")
-
-ft <- merge_v(ft, j = ~ season + year)
-
-#set table properties
-ft <- set_table_properties(ft, layout = "autofit", width = 1)
-
-#add lines between year x season
-ft <- theme_vanilla(ft) |> 
-  fontsize(size = 10)
-
-#center columns
-ft <- align(ft, align = "center", part = "all" )
-
-ft <- fix_border_issues(ft)
+  #format superscript
+  compose(j = "area", part="header",
+          value = as_paragraph(
+            "Total Area Sampled (m", 
+            as_sup("2"),
+            ")")) |> 
+  
+  #formatting
+  theme_vanilla()  |>  
+  fontsize(size = 10) |> 
+  
+  #set table properties
+  set_table_properties(layout = "autofit", width = 1) |> 
+  
+  #center columns
+  align(align = "center", part = "all" )
 
 #print the table
 #right click on the table, choose select all, 
@@ -287,21 +182,22 @@ ft <- fix_border_issues(ft)
 ft
 
 
+
 ```
+
 
 ## Descriptive Statistics
 
-Use the template code below to calculate the descriptive statistics for your variable of interest. The output of this code should not all be reported in your paper. Decide which (if any) of the descriptive statistics you should report and make sure to round the values. Descriptive statistics can be reported in the text of the results (see this [example results section](https://docs.google.com/document/d/1vwyOSmhZzTuIfAEbpeiv3yCsU1UMZDsTXgnbE80nPTU/edit?usp=sharing)) if relatively simple, or you can make a formatted table of just the necessary, rounded values to include in your paper (in which case you might want to use "formatted_descriptiveStats_table.R" in the "data_description" script templates to help you make a formatted table).
+Use the template code below to calculate the descriptive statistics for your variable of interest. 
+
+The output of this code should NOT all be reported in your paper. Decide which (if any) of the descriptive statistics you should report and make sure to round the values. 
+
+Descriptive statistics can be reported in the text of the results (see this [example results section](https://docs.google.com/document/d/1vwyOSmhZzTuIfAEbpeiv3yCsU1UMZDsTXgnbE80nPTU/edit?usp=sharing)) if relatively simple, or you can make a formatted table of just the necessary, rounded values to include in your paper.
 
 ```{r}
-#| label: formatted descriptive stats density
+#| label: tbl-descriptive-stats-density
 #| tbl-cap: Limpet Density Descriptive Statistics
 #| include: true
-
-#before you run the code below...
-
-#make sure the 'flextable' and `tidyverse` packages are installed and loaded
-#make sure your data are imported
 
 #see https://davidgohel.github.io/flextable/ for more information and formatting options
 
@@ -309,10 +205,14 @@ Use the template code below to calculate the descriptive statistics for your var
 x.var <- "density" #put the name of the column you want to summarize in the blank here
 
 #calculate descriptive stats
-#remove the lines below that you don't need (you won't usually need ALL these values)
 df.sum <- density.df |> #put the name of the data frame here
   group_by(season, location) |> #put the grouping variable(s) here
-  summarise(mean = round(mean(.data[[x.var]]), digits=0), #change the digits as needed
+  filter(!is.na(.data[[x.var]])) |> # remove missing values 
+  
+  #remove the lines below that you don't need 
+  #you won't usually need ALL these values
+  #change the digits as needed
+  summarise(mean = round(mean(.data[[x.var]]), digits=2), 
             SD = signif(sd(.data[[x.var]]), digits=2),
             median = round(median(.data[[x.var]]), digits=2),
             IQR = round(IQR(.data[[x.var]]), digits=2),
@@ -322,13 +222,13 @@ df.sum <- density.df |> #put the name of the data frame here
 
 #create the table
 ft <- flextable(df.sum,
-                cwidth=0.75) #can vary cell width as needed
-
-#bold the headings
-ft <- bold(ft, part="header")
-
-#center columns
-ft <- align(ft, align = "center", part = "all" )
+                cwidth=0.75) |>  #can vary cell width as needed
+  
+  #bold the headings
+  bold(part="header") |> 
+  
+  #center columns
+  align(align = "center", part = "all" )
 
 #print the table
 #right click on the table, choose select all, 
@@ -336,13 +236,10 @@ ft <- align(ft, align = "center", part = "all" )
 #finish formatting as needed in your document
 ft
 
-
-
 ```
 
-
 ```{r}
-#| label: formatted descriptive stats DO
+#| label: tbl-descriptive-stats-DO
 #| tbl-cap: Dissolved Oxygen Descriptive Statistics
 #| include: true
 
@@ -385,13 +282,10 @@ ft <- align(ft, align = "center", part = "all" )
 #finish formatting as needed in your document
 ft
 
-
-
 ```
 
-
 ```{r}
-#| label: formatted descriptive stats wTemp
+#| label: tbl-descriptive-stats-wTemp
 #| tbl-cap: Water Temperature Descriptive Statistics
 #| include: true
 
@@ -438,7 +332,6 @@ ft
 
 ```
 
-
 # Data Visualization
 
 Find the code you need to visualize (=graph) your data by looking in the "graphing" folder within the "script_templates" folder. Copy and paste the code you need in the chunk below.
@@ -454,14 +347,13 @@ density.df |>
   filter(!is.na(DO)) |> 
 
 ggplot(
-  data = ., 
   aes(x = DO, y = density+1, color = location)) + 
   geom_point(size = 3) +                   #play with the point attributes as needed
   geom_smooth(method = "lm", se = FALSE) + #adds line of best fit
   ylab(bquote("Limpet Density (number/"~m^2*")")) +
   xlab("Dissolved Oxygen (mg/L)") +
   labs(color = "Location") +
-  theme_classic(base_size = 18) +
+  theme_classic(base_size = 16) +
   theme(legend.position = "top") +
   scale_y_log10() +     #changes y-axis to log-scale
   annotation_logticks(sides = "l") + # adds log-scale tick marks 
@@ -497,14 +389,13 @@ density.df |>
   filter(!is.na(wTemp)) |> 
 
 ggplot(
-  data = ., 
   aes(x = wTemp, y = density+1, color = location)) + 
   geom_point(size = 3) +                   #play with the point attributes as needed
   geom_smooth(method = "lm", se = FALSE) + #adds line of best fit
   ylab(bquote("Limpet Density (number/"~m^2*")")) +
   xlab("Water Temperature ("~degree~"C)") +
   labs(color = "Location") +
-  theme_classic(base_size = 18) +
+  theme_classic(base_size = 16) +
   theme(legend.position = "top") +
   scale_y_log10() +     #changes y-axis to log-scale
   annotation_logticks(sides = "l") + # adds log-scale tick marks 
@@ -534,7 +425,6 @@ density.df |>
   filter(!is.na(wTemp)) |> 
 
 ggplot(
-  data = .,   
   aes(x = location, y = wTemp,   
       fill = location, color = location)) + 
   geom_quasirandom( 
@@ -574,14 +464,13 @@ density.df |>
   filter(!is.na(DO), !is.na(wTemp)) |> 
 
 ggplot(
-  data = ., 
   aes(x = wTemp, y = DO, color = location)) + 
   geom_point(size = 3) +                   #play with the point attributes as needed
   geom_smooth(method = "lm", se = FALSE) + #adds line of best fit
   ylab("Dissolved Oxygen (mg/L)") +
   xlab("Water Temperature ("~degree~"C)") +
   labs(color = "Location") +
-  theme_classic(base_size = 18) +
+  theme_classic(base_size = 16) +
   theme(legend.position = "top") 
 
 
