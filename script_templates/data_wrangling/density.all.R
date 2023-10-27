@@ -5,13 +5,28 @@
 
 macro.density <- macros  |>  
   
-  #join taxa info
-  left_join(master.taxa)  |> 
-  
-  # Sum for each sampleID and the different taxa 
+  # Summarize for each sampleID 
   # density of ALL macroinvertebrates
-  # change group_by function to remove or add grouping variables as needed 
-  group_by(date, sampleID, season, location, year, benthicArea)  |>  
-  dplyr::summarise (density = sum(invDens, na.rm = TRUE)) 
+  group_by(sampleID)  |>  
+  dplyr::summarise(density = sum(invDens, na.rm = TRUE)) 
 
 
+#get sample info and env variables of interest
+sample.info <- macros |>
+  
+  #join environmental variables
+  left_join(env) |> 
+  
+  #select variables of interest
+  #delete anything you don't need
+  #add anything you do need in the blank with commas in between
+  dplyr::select(date, sampleID, season, year, location, benthicArea,
+         ___) |> 
+  distinct()
+
+#add sample info back to density data
+density.df <- left_join(macro.density, sample.info) |> 
+  
+  #filter out anything you don't want
+  #the example below would filter out just the year 2018
+  dplyr::filter(year != "2018") 
