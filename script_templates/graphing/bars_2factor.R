@@ -4,11 +4,11 @@
 
 
 #first calculate the mean, sd, & count the observations in each group
-df.sum <- ___ %>%               #data frame name here
-  group_by(___, ___) %>%        #name of 2 factors here
-  summarise(mean = mean(___),   #continuous variable here
-            sd = sd(___),       #same continuous variable as above here
-            n = n()) %>%
+df.sum <- ___ |>               #data frame name here
+  group_by(___, ___) |>        #name of 2 factors here
+  summarise(mean = mean(___),  #continuous variable here
+            sd = sd(___),      #same continuous variable as above here
+            n = n()) |>        #don't change anything here
   
   #calculate the standard error
   mutate(sem = sd/(sqrt(n)))
@@ -24,8 +24,13 @@ ggplot(
                 width=0.2, size=0.5, show.legend = FALSE) +
   ylab("___") +
   xlab("___") +
-  coord_cartesian(xlim = c(0.5,4.5), expand=FALSE) + #adjust the second number to be 0.5 greater than the number of groups in 1st factor
-  theme_classic(base_size=16) 
+  
+  #adjust the second number in xlim to be 
+  #0.5 greater than the number of groups in 1st factor
+  coord_cartesian(xlim = c(0.5,5.5), expand=FALSE) + 
+  
+  theme_classic(base_size=16) +
+  theme(legend.position = "top") #change the position of the key as needed 
 
 
 #see the resources below for some additional options to make a nice plot 
