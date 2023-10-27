@@ -4,11 +4,11 @@
 
 
 #first calculate the mean, sd, & count the observations in each group
-df.sum <- ___ %>%             #data frame name here
-  group_by(___) %>%           #name of factor here
+df.sum <- ___ |>             #data frame name here
+  group_by(___) |>           #name of factor here
   summarise(mean = mean(___), #continuous variable here
             sd = sd(___),     #same continuous variable as above here
-            n = n()) %>%
+            n = n()) |>       #don't change anything here
   
   #calculate the standard error
   mutate(sem = sd/(sqrt(n)))
