@@ -49,4 +49,8 @@ variables <- macros |>
 
 #add in the variables just selected
 #sampleID is the "key" used to match up the two data frames
-my.df <- left_join(macro.prd, variables)
+my.df <- left_join(macro.prd, variables) |> 
+  
+  #filter out anything you don't want
+  #the example below would filter out just the year 2018
+  dplyr::filter(year != "2018")
