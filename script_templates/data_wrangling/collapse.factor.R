@@ -2,7 +2,7 @@
 # within dplyr::mutate
 
 # here is an example
-macros.new <- macros %>% 
+macros.new <- macros  |>  
   mutate(microhab.light = fct_collapse
          (microhabitat,
            high = c("DM", "DSP", "UM", "USU"),
