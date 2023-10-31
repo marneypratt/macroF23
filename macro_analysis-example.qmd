@@ -1,7 +1,7 @@
 ---
 title: "Macroinvertebrate Data Analysis"
 author: "Marney Pratt"
-date: "October 27, 2023"
+date: "October 31, 2023"
 format: 
   html:
     code-overflow: wrap
@@ -115,7 +115,10 @@ my.df <- left_join(density.df, variables) |>
   
   #filter out anything you don't want
   #the example below would filter out just the year 2018
-  dplyr::filter(year != "2018")
+  dplyr::filter(year != "2018") |> 
+  
+  #remove rows with missing data
+  na.omit()
 
 ```
 
@@ -344,24 +347,37 @@ Find the code you need to visualize (=graph) your data by looking in the "graphi
 #| label: limpet density vs DO graph
 #| message: false
 
-
-# this code will make a scatter plot with each graphed on a log-scale axis
-
-my.df |> 
-  filter(!is.na(DO)) |> 
+# this code will make a scatter plot 
+# if you do not want a line of best fit, then delete the geom_smooth() line
 
 ggplot(
-  aes(x = DO, y = density+1, color = location)) + 
-  geom_point(size = 3) +                   #play with the point attributes as needed
-  geom_smooth(method = "lm", se = FALSE) + #adds line of best fit
-  ylab(bquote("Limpet Density (number/"~m^2*")")) +
+  data = my.df, #put the data frame name here
+  
+  #set the aesthetics
+  aes(x = DO,       #put the factor on the x-axis
+      y = density + 1,       #continuous variable = y
+      color = location)) + #put the same factor as on x-axis 
+  
+  #add points
+  geom_point(size = 3) +    #sets the size of the points
+  
+  #add best fit line
+  geom_smooth(method = "lm", se = FALSE) + 
+
+  #nicer labels (see axis.labels.R script)
   xlab("Dissolved Oxygen (mg/L)") +
-  labs(color = "Location") +
-  theme_classic(base_size = 16) +
-  theme(legend.position = "top") +
+  ylab(bquote("Limpet Density (number/"~m^2*")")) +
+  labs(color = "Location") + #label for the color key
+  
+  
+  #additional formatting
+  theme_classic(base_size = 16)  +  #sets the font size
+  theme(legend.position = "top") +  #controls legend/key
+  
   scale_y_log10() +     #changes y-axis to log-scale
-  annotation_logticks(sides = "l") + # adds log-scale tick marks 
-  facet_wrap(vars(season))   
+  annotation_logticks(sides = "l") + # adds log-scale tick marks
+
+  facet_wrap(vars(season))   #place factor to split by facets here
 
 #see the resources below for some additional options to make a nice scatter plot 
 # https://www.datanovia.com/en/lessons/ggplot-scatter-plot/
@@ -387,27 +403,42 @@ ggsave(filename="images/limpet.DO.png",  #recommended to use.png or .jpg file ty
 #| message: false
 
 
-# this code will make a scatter plot with each graphed on a log-scale axis
-
-my.df |> 
-  filter(!is.na(wTemp)) |> 
+# this code will make a scatter plot 
+# if you do not want a line of best fit, then delete the geom_smooth() line
 
 ggplot(
-  aes(x = wTemp, y = density+1, color = location)) + 
-  geom_point(size = 3) +                   #play with the point attributes as needed
-  geom_smooth(method = "lm", se = FALSE) + #adds line of best fit
-  ylab(bquote("Limpet Density (number/"~m^2*")")) +
+  data = my.df, #put the data frame name here
+  
+  #set the aesthetics
+  aes(x = wTemp,       #put the factor on the x-axis
+      y = density + 1,       #continuous variable = y
+      color = location)) + #put the same factor as on x-axis 
+  
+  #add points
+  geom_point(size = 3) +    #sets the size of the points
+  
+  #add best fit line
+  geom_smooth(method = "lm", se = FALSE) + 
+
+  #nicer labels (see axis.labels.R script)
   xlab("Water Temperature ("~degree~"C)") +
-  labs(color = "Location") +
-  theme_classic(base_size = 16) +
-  theme(legend.position = "top") +
+  ylab(bquote("Limpet Density (number/"~m^2*")")) +
+  labs(color = "Location") + #label for the color key
+  
+  
+  #additional formatting
+  theme_classic(base_size = 16)  +  #sets the font size
+  theme(legend.position = "top") +  #controls legend/key
+  
   scale_y_log10() +     #changes y-axis to log-scale
-  annotation_logticks(sides = "l") + # adds log-scale tick marks 
-  facet_wrap(vars(season))   
+  annotation_logticks(sides = "l") + # adds log-scale tick marks
+
+  facet_wrap(vars(season))   #place factor to split by facets here
 
 #see the resources below for some additional options to make a nice scatter plot 
 # https://www.datanovia.com/en/lessons/ggplot-scatter-plot/
 # https://ggplot2.tidyverse.org/index.html
+
 ```
 
 ```{r}
@@ -425,28 +456,45 @@ ggsave(filename="images/limpet.wTemp.png",  #recommended to use.png or .jpg file
 
 #| label: wTemp vs season and location
 
-my.df |> 
-  filter(!is.na(wTemp)) |> 
+#this code will make a dot plot with median and all points included
+#make sure you have loaded the ggbeeswarm package to use geom_quasirandom()
 
 ggplot(
-  aes(x = location, y = wTemp,   
-      fill = location, color = location)) + 
-  geom_quasirandom( 
-    shape=21, size=2, alpha = 0.5, width=0.2, 
-    dodge.width = 1,  show.legend = FALSE) + 
-  stat_summary(fun = median, 
-               fun.min = median, 
-               fun.max = median, 
-               geom = "crossbar", na.rm = TRUE,
-               width = 0.5, size = 0.5, 
-               color = "black",
-               position=position_dodge(width=1), 
-               show.legend = FALSE) + 
+  data = my.df, #put the data frame name here
+  
+  #set the aesthetics
+  aes(x = location,       #put the factor on the x-axis
+      y = wTemp,       #continuous variable = y
+      color = location)) + #same factor as x-axis for color
+  
+  #adds quasirandom jittered points
+  geom_quasirandom(
+    shape = 19,            #shape as circle
+    size = 2,              #size of point
+    alpha = 0.8,           #transparency
+    width = 0.25) +        #spread
+  
+  #adds median
+  stat_summary(
+    fun = median,       #graphs the median
+    geom = "crossbar",  #crossbar shape
+    width = 0.5,        #width of the bar
+    size = 0.75,        #size
+    color = "black") +  #color 
+  
+  #nicer labels (see axis.labels.R script)
   ylab("Water Temperature ("~degree~"C)") +
   xlab("Location") +
-  coord_cartesian(expand=TRUE) +
-  theme_classic(base_size=16) +
-  facet_wrap(vars(season))   
+  
+  #additional formatting
+  theme_classic(base_size = 16)  +  #sets the font size
+  theme(legend.position = "none") +  #controls legend/key
+
+  facet_wrap(vars(season))   #place factor to split by facets here
+
+#see the resources below for some additional options to make a nice plot 
+# https://www.datanovia.com/en/lessons/ggplot-dot-plot/
+# https://ggplot2.tidyverse.org/index.html
 
 ```
 
@@ -464,19 +512,36 @@ ggsave(filename="images/wTemp.season.png",  #recommended to use.png or .jpg file
 #| label: DO vs wTemp graph
 #| message: false
 
-my.df |> 
-  filter(!is.na(DO), !is.na(wTemp)) |> 
+# this code will make a scatter plot 
+# if you do not want a line of best fit, then delete the geom_smooth() line
 
 ggplot(
-  aes(x = wTemp, y = DO, color = location)) + 
-  geom_point(size = 3) +                   #play with the point attributes as needed
-  geom_smooth(method = "lm", se = FALSE) + #adds line of best fit
+  data = my.df, #put the data frame name here
+  
+  #set the aesthetics
+  aes(x = wTemp,       #put the factor on the x-axis
+      y = DO,       #continuous variable = y
+      color = location)) + #put the same factor as on x-axis 
+  
+  #add points
+  geom_point(size = 3) +    #sets the size of the points
+  
+  #add best fit line
+  geom_smooth(method = "lm", se = FALSE) + 
+
+  #nicer labels (see axis.labels.R script)
   ylab("Dissolved Oxygen (mg/L)") +
   xlab("Water Temperature ("~degree~"C)") +
-  labs(color = "Location") +
-  theme_classic(base_size = 16) +
-  theme(legend.position = "top") 
+  labs(color = "Location") + #label for the color key
+  
+  
+  #additional formatting
+  theme_classic(base_size = 16)  +  #sets the font size
+  theme(legend.position = "top")   #controls legend/key
 
+#see the resources below for some additional options to make a nice scatter plot 
+# https://www.datanovia.com/en/lessons/ggplot-scatter-plot/
+# https://ggplot2.tidyverse.org/index.html
 
 ```
 
