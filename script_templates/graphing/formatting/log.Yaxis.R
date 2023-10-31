@@ -2,4 +2,4 @@
 #log-scale axis on y-axes
 
   scale_y_log10() +     #changes y-axis to log-scale
-  annotation_logticks() # adds log-scale tick marks
+  annotation_logticks(sides = "l") + # adds log-scale tick marks

@@ -2,16 +2,16 @@
 
 ylab(bquote("Density (number/"~m^2*")")) +
   
-ylab("Flow Rate (m/s)") +
+xlab("Flow Rate (m/s)") +
 
-ylab("Dissolved Oxygen (mg/L)") +
+xlab("Dissolved Oxygen (mg/L)") +
 
-ylab(~paste("PAR"," ", "(" ,mu, "mol m"^-2,"s"^-1, ")")) +
+xlab(~paste("PAR"," ", "(" ,mu, "mol m"^-2,"s"^-1, ")")) +
 
-ylab("pH") +
+xlab("pH") +
 
-ylab("Water Temperature ("~degree~"C)") +
+xlab("Water Temperature ("~degree~"C)") +
 
-ylab("Turbidity (NTU)") +
+xlab("Turbidity (NTU)") +
 
-ylab(~paste("Conductivity"," ", "(" ,mu, "S cm"^-1, ")")) +
+xlab(~paste("Conductivity"," ", "(" ,mu, "S cm"^-1, ")")) +
