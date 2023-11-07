@@ -40,7 +40,7 @@ effective.sp <- exp(shannon)
 richness <- specnumber(macro.wide) 
 
 #Max possible diversity
-max.H <- log(rich)
+max.H <- log(richness)
 
 
 #Pielou's Evenness J 
