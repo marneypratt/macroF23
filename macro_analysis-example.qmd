@@ -85,7 +85,7 @@ density.df <- macros |>
   
   # Summarize for each sampleID and each genus 
   group_by(sampleID, genus) |> 
-  dplyr::summarise (density = sum(invDens, na.rm = TRUE)) |> 
+  dplyr::summarise(density = sum(invDens, na.rm = TRUE)) |> 
   
   #fill in group combos where there were none present with zeros
   ungroup() |> 
