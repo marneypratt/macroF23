@@ -55,7 +55,7 @@ No restrictions other than proper citation/attribution
 
 2. Recommended citation for this metadata text file:
 
-Pratt, MC.  2023.  Mill River enironmental data metadata for 2018-2023.  
+Pratt, MC.  2023.  Mill River environmental data metadata for 2018-2023.  
 Smith College, Northampton, MA.
 
 3. Recommended citation for the data:
