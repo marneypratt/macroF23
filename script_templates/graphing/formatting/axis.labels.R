@@ -15,3 +15,7 @@ xlab("Water Temperature ("~degree~"C)") +
 xlab("Turbidity (NTU)") +
 
 xlab(~paste("Conductivity"," ", "(" ,mu, "S cm"^-1, ")")) +
+  
+xlab("Monthly Precipitation (mm)") +
+  
+xlab("Monthly Accummulated Degree Days") +
