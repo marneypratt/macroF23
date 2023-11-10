@@ -5,6 +5,7 @@ date: "October 31, 2023"
 format: 
   html:
     code-overflow: wrap
+    embed-resources: true
 ---
 
 # Getting Setup
