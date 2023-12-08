@@ -11,7 +11,7 @@ ggplot(
   #add points
   geom_point(size = 3) +    #sets the size of the points
   
-  #add locally weighted smoothing line
+  #add locally weighted smoothing curve
   geom_smooth(method = "loess",       
               se = FALSE, 
               formula = y ~ x) + 
@@ -29,5 +29,7 @@ ggplot(
 # https://www.datanovia.com/en/lessons/ggplot-scatter-plot/
 # https://ggplot2.tidyverse.org/index.html
 
-#see the link below for more on smoothing lines using geom_smooth
+#see the links below for more on smoothing curves using geom_smooth
 # https://www.sharpsightlabs.com/blog/geom_smooth/ 
+# https://blogs.bgsu.edu/math6820ywonkye/2018/10/25/loess/
+# https://en.wikipedia.org/wiki/Local_regression
